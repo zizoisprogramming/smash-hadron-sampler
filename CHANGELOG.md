@@ -17,6 +17,7 @@ Also possible, but for this project less relevant, is `Deprecated` for soon-to-b
 
 ## Unreleased
 
+* :heavy_plus_sign: Add config key to support sampling of hydro evolution run in Cartesian coordinates (addtional to sampling in Milne coordinates)
 * :sos: Fix problems with thread safety from ROOT objects
 * :left_right_arrow: ROOT output is now disabled by default, it can be enabled in the config by setting createRootOutput parameter to 1
 

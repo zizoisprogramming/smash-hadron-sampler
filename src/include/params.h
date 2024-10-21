@@ -3,6 +3,7 @@
 
 namespace params{
 extern char sSurface [255], sSpectraDir [255];
+extern char coordinateSystemHydro [10];
 extern bool weakContribution ;
 extern bool rescatter ;
 extern bool shear ;
@@ -14,7 +15,7 @@ extern double dx, dy, deta ;
 extern double ecrit, cs2, ratio_pressure_energydensity ;
 extern bool createRootOutput;
 
-// ---- rooutines ----
+// ---- Routines ----
 void readParams(char* filename) ;
 void printParameters() ;
 }
