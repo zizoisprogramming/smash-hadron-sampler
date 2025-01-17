@@ -86,6 +86,9 @@ Optional parameters:
     cs2                           Speed of sound squared.               Default is 0.15.
     ratio_pressure_energydensity  Pressure divided by energy density.   Default is 0.15.
     createRootOutput              Enables ROOT output if set to 1.      Default is 0 (false).
+    hydro_coordinate_system       Coordinate system in which the freezeout hypersurface data from
+                                  the hydro evolution is provided. Possible coordinate systems are
+                                  Milne (default) or Cartesian.
 
 
 > [!TIP]

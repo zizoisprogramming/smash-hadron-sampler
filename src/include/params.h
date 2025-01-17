@@ -4,10 +4,10 @@
 #include <string>
 
 namespace params {
-extern std::string surface_file, output_directory;
+extern std::string surface_file, output_directory, hydro_coordinate_system;
 extern bool bulk_viscosity_enabled, createRootOutput, shear_viscosity_enabled;
 extern int NEVENTS;
-extern double dx, dy, deta;
+extern double dx, dy, deta, dz;
 extern double ecrit, speed_of_sound_squared, ratio_pressure_energydensity;
 // extern double Temp, mu_b, mu_q, mu_s;
 
