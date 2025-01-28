@@ -11,7 +11,7 @@
 #include "tree.h"
 
 using namespace std;
-int getNlines(const char *filename);
+int get_N_lines_and_set_cell_sizes(const char *filename);
 int readCommandLine(int argc, char **argv);
 
 using params::NEVENTS;
@@ -35,7 +35,8 @@ int main(int argc, char **argv) {
   gen::rnd = random3;
 
   // ========== generator init
-  gen::load(surface_file.c_str(), getNlines(surface_file.c_str()));
+  gen::load(surface_file.c_str(),
+            get_N_lines_and_set_cell_sizes(surface_file.c_str()));
 
   // ========== trees & files
   time_t start, end;
@@ -114,15 +115,15 @@ int readCommandLine(int argc, char **argv) {
 
 // auxiliary function to get the number of lines of the freezeout data file
 // and to read out the cell sizes of the hydro evolution
-int getNlines(const char *filename) {
+int get_N_lines_and_set_cell_sizes(const char *filename) {
   ifstream fin(filename);
   if (!fin) {
-    cout << "getNlines function error: Cannot open file "
+    cout << "get_N_lines_and_set_cell_sizes function error: Cannot open file "
          << filename << endl;
     exit(1);
   }
   std::string line;
-  double eta_z_value_prior_line;
+  double x_value_prior_line, y_value_prior_line, eta_z_value_prior_line;
   double time_value_current_line, x_value_current_line, y_value_current_line,
       eta_z_value_current_line;
   double machine_epsilon = std::numeric_limits<double>::epsilon();
@@ -131,6 +132,20 @@ int getNlines(const char *filename) {
     std::istringstream sline(line);
     sline >> time_value_current_line >> x_value_current_line >>
         y_value_current_line >> eta_z_value_current_line;
+    if (params::transversal_smearing_enabled) {
+      if (number_of_lines == 0) {
+        x_value_prior_line = x_value_current_line;
+        y_value_prior_line = y_value_current_line;
+      }
+      if (params::dx < machine_epsilon) {
+        params::dx = std::abs(x_value_current_line - x_value_prior_line);
+        x_value_prior_line = x_value_current_line;
+      }
+      if (params::dy < machine_epsilon) {
+        params::dy = std::abs(y_value_current_line - y_value_prior_line);
+        y_value_prior_line = y_value_current_line;
+      }
+    }
     if (params::deta_dz < machine_epsilon) {
       if (number_of_lines == 0) {
         eta_z_value_prior_line = eta_z_value_current_line;

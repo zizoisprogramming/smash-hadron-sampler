@@ -17,10 +17,11 @@ Also possible, but for this project less relevant, is `Deprecated` for soon-to-b
 
 ## Unreleased
 
-* :heavy_plus_sign: Added sampling of freezeout hypersurface data given in Cartesian coordinates (addtional to sampling in Milne coordinates). Coordinates of freezeout data specifiable via new config key `hydro_coordinate_system`.
 * :left_right_arrow: Renamed config key `spectra_dir`, used to specify the output directory, to `output_dir`.
 * :left_right_arrow: Changed the command line parameters used to run the sampler to clarify their usage.
 * :heavy_plus_sign: Added optional command line parameters to overwrite the `surface` and `output_dir` keys in the config file.
+* :heavy_plus_sign: Added option to enable transversal smearing (in x and y direction). Can be enabled by using the new config key `transversal_smearing` (bool, default is 0 (disabled)).
+* :heavy_plus_sign: Added sampling of freezeout hypersurface data given in Cartesian coordinates (addtional to sampling in Milne coordinates). Coordinates of freezeout data specifiable via new config key `hydro_coordinate_system`.
 * :sos: Fix problems with thread safety from ROOT objects
 * :left_right_arrow: ROOT output is now disabled by default, it can be enabled in the config by setting createRootOutput parameter to 1
 

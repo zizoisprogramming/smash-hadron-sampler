@@ -383,8 +383,14 @@ void generate() {
         } while (rval > W); // end fast momentum generation
         if (niter > nmaxiter)
           nmaxiter = niter;
-        const double x = surf[iel].pos[1];
-        const double y = surf[iel].pos[2];
+        double smearing_x_coordinate = 0;
+        double smearing_y_coordinate = 0;
+        if (params::transversal_smearing_enabled) {
+          smearing_x_coordinate = params::dx * (-0.5 + rnd->Rndm());
+          smearing_y_coordinate = params::dy * (-0.5 + rnd->Rndm());
+        }
+        const double x = surf[iel].pos[1] + smearing_x_coordinate;
+        const double y = surf[iel].pos[2] + smearing_y_coordinate;
         double t = 0, z = 0, vx = 0, vy = 0, vz = 0;
         const double eta_z_coordinate_smearing =
             params::deta_dz * (-0.5 + rnd->Rndm());

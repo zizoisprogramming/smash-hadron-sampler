@@ -89,6 +89,7 @@ Optional parameters:
     hydro_coordinate_system       Coordinate system in which the freezeout hypersurface data from
                                   the hydro evolution is provided. Possible coordinate systems are
                                   Milne (default) or Cartesian.
+    transversal_smearing          Enables smearing in x and y direction if set to 1. Default is 0 (false).
 
 
 > [!TIP]

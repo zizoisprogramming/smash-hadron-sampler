@@ -13,7 +13,7 @@ namespace params {
 std::string surface_file{"unset"}, output_directory{"unset"},
     hydro_coordinate_system{"milne"};
 bool bulk_viscosity_enabled{false}, createRootOutput{false},
-    shear_viscosity_enabled{false};
+    shear_viscosity_enabled{false}, transversal_smearing_enabled{false};
 int NEVENTS;
 double dx{0}, dy{0}, deta_dz{0};
 double ecrit, speed_of_sound_squared{0.15}, ratio_pressure_energydensity{0.15};
@@ -65,6 +65,8 @@ void readParams(const std::string &filename) {
             hydro_coordinate_system +
             std::string("'. Please update the config and try again."));
       }
+    } else if (parName == "transversal_smearing") {
+      transversal_smearing_enabled = std::stoi(parValue);
     } else if (parName[0] == '!')
       cout << "CCC " << sline.str() << endl;
     else
@@ -85,6 +87,7 @@ void printParameters() {
        << endl;
   cout << "createRootOutput = " << createRootOutput << endl;
   cout << "hydro_coordinate_system = " << hydro_coordinate_system << endl;
+  cout << "transversal_smearing = " << transversal_smearing_enabled << endl;
   cout << "======= end parameters =======\n";
 }
 
