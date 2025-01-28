@@ -386,26 +386,27 @@ void generate() {
         const double x = surf[iel].pos[1];
         const double y = surf[iel].pos[2];
         double t = 0, z = 0, vx = 0, vy = 0, vz = 0;
+        const double eta_z_coordinate_smearing =
+            params::deta_dz * (-0.5 + rnd->Rndm());
         if (params::hydro_coordinate_system == "milne") {
           // additional random smearing over eta
           const double etaF = 0.5 * log((surf[iel].u[0] + surf[iel].u[3]) /
                                         (surf[iel].u[0] - surf[iel].u[3]));
-          const double etaShift = params::deta * (-0.5 + rnd->Rndm());
           vx = surf[iel].u[1] / surf[iel].u[0] * cosh(etaF) /
-               cosh(etaF + etaShift);
+               cosh(etaF + eta_z_coordinate_smearing);
           vy = surf[iel].u[2] / surf[iel].u[0] * cosh(etaF) /
-               cosh(etaF + etaShift);
-          vz = tanh(etaF + etaShift);
-          t = surf[iel].pos[0] * cosh(surf[iel].pos[3] + etaShift);
-          z = surf[iel].pos[0] * sinh(surf[iel].pos[3] + etaShift);
+               cosh(etaF + eta_z_coordinate_smearing);
+          vz = tanh(etaF + eta_z_coordinate_smearing);
+          t = surf[iel].pos[0] *
+              cosh(surf[iel].pos[3] + eta_z_coordinate_smearing);
+          z = surf[iel].pos[0] *
+              sinh(surf[iel].pos[3] + eta_z_coordinate_smearing);
         } else if (params::hydro_coordinate_system == "cartesian") {
-          const double smearing_z_coordinate =
-              params::dz * (-0.5 + rnd->Rndm());
           vx = surf[iel].u[1] / surf[iel].u[0];
           vy = surf[iel].u[2] / surf[iel].u[0];
           vz = surf[iel].u[3] / surf[iel].u[0];
           t = surf[iel].pos[0];
-          z = surf[iel].pos[3] + smearing_z_coordinate;
+          z = surf[iel].pos[3] + eta_z_coordinate_smearing;
         } else {
           throw std::invalid_argument(
               std::string("Only 'Milne' or 'Cartesian' are "
@@ -414,7 +415,6 @@ void generate() {
               params::hydro_coordinate_system +
               std::string("'. Please check your config file."));
         }
-
         mom.Boost(vx, vy, vz);
         smash::FourVector momentum(mom.E(), mom.Px(), mom.Py(), mom.Pz());
         smash::FourVector position(t, x, y, z);

@@ -2,6 +2,7 @@
 #include <TROOT.h>
 #include <TRandom3.h>
 #include <fstream>
+#include <limits>
 #include <string>
 
 #include "gen.h"
@@ -112,15 +113,32 @@ int readCommandLine(int argc, char **argv) {
 }
 
 // auxiliary function to get the number of lines of the freezeout data file
+// and to read out the cell sizes of the hydro evolution
 int getNlines(const char *filename) {
   ifstream fin(filename);
   if (!fin) {
-    cout << "getNlines function error: Cannot open file " << filename << endl;
+    cout << "getNlines function error: Cannot open file "
+         << filename << endl;
     exit(1);
   }
-  string line;
+  std::string line;
+  double eta_z_value_prior_line;
+  double time_value_current_line, x_value_current_line, y_value_current_line,
+      eta_z_value_current_line;
+  double machine_epsilon = std::numeric_limits<double>::epsilon();
   int number_of_lines = 0;
   while (getline(fin, line)) {
+    std::istringstream sline(line);
+    sline >> time_value_current_line >> x_value_current_line >>
+        y_value_current_line >> eta_z_value_current_line;
+    if (params::deta_dz < machine_epsilon) {
+      if (number_of_lines == 0) {
+        eta_z_value_prior_line = eta_z_value_current_line;
+      }
+      params::deta_dz =
+          std::abs(eta_z_value_current_line - eta_z_value_prior_line);
+      eta_z_value_prior_line = eta_z_value_current_line;
+    }
     number_of_lines++;
   };
   fin.close();

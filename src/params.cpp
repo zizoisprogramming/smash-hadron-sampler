@@ -15,7 +15,7 @@ std::string surface_file{"unset"}, output_directory{"unset"},
 bool bulk_viscosity_enabled{false}, createRootOutput{false},
     shear_viscosity_enabled{false};
 int NEVENTS;
-double dx{0}, dy{0}, deta{0.05}, dz{0.5};
+double dx{0}, dy{0}, deta_dz{0};
 double ecrit, speed_of_sound_squared{0.15}, ratio_pressure_energydensity{0.15};
 // double Temp, mu_b, mu_q, mu_s ;
 
