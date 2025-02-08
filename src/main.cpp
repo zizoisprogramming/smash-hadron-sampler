@@ -14,38 +14,40 @@ using namespace std;
 int getNlines(const char *filename);
 int readCommandLine(int argc, char **argv);
 
-using params::NEVENTS;
+using params::number_of_events;
 using params::output_directory;
 using params::surface_file;
 
-// ########## MAIN block ##################
-
+/**
+ * Main program
+ * samples hadrons from freezeout hypersurface
+ */
 int main(int argc, char **argv) {
   ROOT::EnableThreadSafety();
   // command-line parameters
   int prefix = readCommandLine(argc, argv);
-  params::printParameters();
+  params::print_config_parameters();
   time_t time0;
   time(&time0);
   int ranseed = time0 + prefix * 16;
 
   TRandom3 *random3 = new TRandom3();
   random3->SetSeed(ranseed);
-  cout << "Random seed = " << ranseed << endl;
+  std::cout << "Random seed:  " << ranseed << std::endl;
   gen::rnd = random3;
 
   // ========== generator init
   gen::load(surface_file.c_str(), getNlines(surface_file.c_str()));
 
   // ========== trees & files
-  time_t start, end;
-  time(&start);
+  time_t start_time, end_time;
+  time(&start_time);
 
   //============= main task
   std::string make_output_directory = "mkdir -p " + output_directory;
   system(make_output_directory.c_str());
 
-  gen::generate(); // one call for NEVENTS
+  gen::generate(); // one call for number_of_events
 
   // ROOT output disabled by default
   if (params::create_root_output) {
@@ -58,7 +60,7 @@ int main(int argc, char **argv) {
     MyTree *treeIni = new MyTree(static_cast<const char *>("treeini"));
 
     // Write ROOT output
-    for (int iev = 0; iev < NEVENTS; iev++) {
+    for (int iev = 0; iev < number_of_events; iev++) {
       treeIni->fill(iev);
     } // end events loop
     outputFile->Write();
@@ -68,10 +70,11 @@ int main(int argc, char **argv) {
   // Write Oscar output
   write_oscar_output();
 
-  cout << "Event generation done\n";
-  time(&end);
-  float diff2 = difftime(end, start);
-  cout << "Execution time = " << diff2 << " [sec]" << endl;
+  time(&end_time);
+  float execution_time = difftime(end_time, start_time);
+  std::cout << "Event generation done (execution time: " << execution_time
+            << " [sec])." << std::endl;
+
   return 0;
 }
 
@@ -85,7 +88,7 @@ int readCommandLine(int argc, char **argv) {
   int iarg = 1;
   while (iarg < argc - 1) {
     if (strcmp(argv[iarg], "--config") == 0 || strcmp(argv[iarg], "-c") == 0) {
-      params::readParams(argv[iarg + 1]);
+      params::read_configuration_file(argv[iarg + 1]);
       is_config_given = true;
       iarg += 2;
     } else if (strcmp(argv[iarg], "--num") == 0 ||
@@ -126,14 +129,15 @@ int readCommandLine(int argc, char **argv) {
   return prefix;
 }
 
-// auxiliary function to get the number of lines of the freezeout data file
+/// Function to get the number of lines in the freezeout data file
 int getNlines(const char *filename) {
-  ifstream fin(filename);
+  std::ifstream fin(filename);
   if (!fin) {
-    cout << "getNlines function error: Cannot open file " << filename << endl;
+    std::cout << "getNlines function error: Cannot open file " << filename
+              << std::endl;
     exit(1);
   }
-  string line;
+  std::string line;
   int number_of_lines = 0;
   while (getline(fin, line)) {
     number_of_lines++;
